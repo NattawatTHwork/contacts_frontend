@@ -51,9 +51,9 @@ export default function SignInSide() {
           body: JSON.stringify(data),
         });
         const result = await response.json();
-        if (result.status === 'ok') {
+        if (result.status === 'success') {
           localStorage.setItem('token', result.token);
-          window.location = '/index'
+          window.location = '/'
         } else if (result.status = 'nofound') {
           await Swal.fire({
             icon: 'error',

@@ -51,7 +51,7 @@ export default function SignUp() {
         body: JSON.stringify(jsonData),
       });
       const result = await response.json();
-      if (result.status === 'ok') {
+      if (result.status === 'success') {
         await Swal.fire({
           icon: 'success',
           title: 'Registration successful',
