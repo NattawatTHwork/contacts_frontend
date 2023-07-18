@@ -39,6 +39,7 @@ export default function SignInSide() {
       email: data.get('email'),
       password: data.get('password'),
     }
+    console.log(jsonData)
     postJSON(jsonData)
 
     async function postJSON(data) {

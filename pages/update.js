@@ -50,14 +50,13 @@ const Update = () => {
       });
 
       if (response.ok) {
-        window.location = '/'
-
-        // Display success message
         Swal.fire({
           icon: 'success',
           title: 'Success',
           text: 'Form submitted successfully'
-        });
+        }).then(() => {
+          window.location = '/';
+        });        
       } else {
         // Handle form submission error
         console.error('Form submission error');
