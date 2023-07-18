@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/router';
-import Navbar from '../components/Navbar';
+import { checkLogin } from '../components/checkLogin';
 
 const Update = () => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const Update = () => {
         console.error('Failed to fetch user data', error);
       }
     };
-
+    checkLogin();
     fetchUser();
   }, [id]);
 

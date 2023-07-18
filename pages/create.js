@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
-import Navbar from '../components/Navbar';
+import { checkLogin } from '../components/checkLogin';
 
 const create = () => {
+  useEffect(() => {
+    checkLogin();
+  }, []);
+
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
