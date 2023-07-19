@@ -50,7 +50,9 @@ export default function SignUp() {
         },
         body: JSON.stringify(jsonData),
       });
+
       const result = await response.json();
+
       if (result.status === 'success') {
         await Swal.fire({
           icon: 'success',
@@ -71,12 +73,10 @@ export default function SignUp() {
           text: 'There was an error during registration.',
         });
       }
-      console.log("Success:", result);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
 
   return (
     <ThemeProvider theme={defaultTheme}>

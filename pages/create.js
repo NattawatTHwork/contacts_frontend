@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { checkLogin } from '../components/checkLogin';
 
 const create = () => {
-  useEffect(() => {
-    checkLogin();
-  }, []);
-
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
     phone: ''
   });
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
   const handleChange = (e) => {
     setFormData((prevData) => ({
@@ -24,30 +24,32 @@ const create = () => {
     e.preventDefault();
 
     try {
+      const token = localStorage.getItem('token');
+
       const response = await fetch(process.env.API_URL + '/create', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify(formData)
       });
 
-      if (response.ok) {
-        // Clear form data
+      const result = await response.json();
+
+      if (result.status == 'success') {
         setFormData({
           firstname: '',
           lastname: '',
           phone: ''
         });
 
-        // Display success message
         Swal.fire({
           icon: 'success',
           title: 'Success',
           text: 'Form submitted successfully'
         });
       } else {
-        // Handle form submission error
         console.error('Form submission error');
       }
     } catch (error) {

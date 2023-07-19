@@ -3,12 +3,17 @@ import React, { useEffect, useState } from 'react';
 
 const Navbar = () => {
   const [token, setToken] = useState('');
+
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-    }
+    checkToken();
   }, []);
+
+  const checkToken = () => {
+    const myToken = localStorage.getItem('token');
+    if (myToken) {
+      setToken(myToken);
+    }
+  }
 
   const handleLogout = (event) => {
     event.preventDefault();

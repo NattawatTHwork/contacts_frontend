@@ -8,15 +8,15 @@ export const checkLogin = async () => {
           Authorization: 'Bearer ' + token,
         },
       });
+
       const result = await response.json();
+      
       if (result.status === 'success') {
         // alert('authen success')
-      } else {
-        // alert('authen failed');
+      } else {;
         localStorage.removeItem('token');
         window.location = '/login';
       }
-      console.log('Success:', result);
     } catch (error) {
       console.error('Error:', error);
     }

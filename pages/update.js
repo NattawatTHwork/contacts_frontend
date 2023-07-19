@@ -13,22 +13,33 @@ const Update = () => {
   });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch(`${process.env.API_URL}/read/${id}`);
-        if (response.ok) {
-          const userData = await response.json();
-          setFormData(userData);
-        } else {
-          console.error('Failed to fetch user data');
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data', error);
-      }
-    };
     checkLogin();
     fetchUser();
   }, [id]);
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${process.env.API_URL}/read/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.status == 'success') {
+        setFormData(result.message);
+      } else {
+        console.error('Failed to fetch user data');
+      }
+    } catch (error) {
+      console.error('Failed to fetch user data', error);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData((prevData) => ({
@@ -41,15 +52,20 @@ const Update = () => {
     e.preventDefault();
 
     try {
+      const token = localStorage.getItem('token');
+
       const response = await fetch(`${process.env.API_URL}/update/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
         },
         body: JSON.stringify(formData)
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (result.status == 'success') {
         Swal.fire({
           icon: 'success',
           title: 'Success',
@@ -58,7 +74,6 @@ const Update = () => {
           window.location = '/';
         });        
       } else {
-        // Handle form submission error
         console.error('Form submission error');
       }
     } catch (error) {

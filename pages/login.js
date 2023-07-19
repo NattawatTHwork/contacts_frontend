@@ -31,6 +31,35 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
+const postJSON = async (data) => {
+  try {
+    const response = await fetch(process.env.API_URL + "/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'success') {
+      localStorage.setItem('token', result.token);
+      window.location = '/'
+    } else if (result.status = 'nofound') {
+      await Swal.fire({
+        icon: 'error',
+        title: result.message,
+        text: 'This account does not exist in the system.',
+      });
+    } else {
+      alert('Login Failed')
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
 export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,36 +68,7 @@ export default function SignInSide() {
       email: data.get('email'),
       password: data.get('password'),
     }
-    console.log(jsonData)
-    postJSON(jsonData)
-
-    async function postJSON(data) {
-      try {
-        const response = await fetch(process.env.API_URL + "/login", {
-          method: "POST", // or 'PUT'
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        const result = await response.json();
-        if (result.status === 'success') {
-          localStorage.setItem('token', result.token);
-          window.location = '/'
-        } else if (result.status = 'nofound') {
-          await Swal.fire({
-            icon: 'error',
-            title: result.message,
-            text: 'This account does not exist in the system.',
-          });
-        } else {
-          alert('login failed')
-        }
-        console.log("Success:", result);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
+    postJSON(jsonData);
   };
 
   return (

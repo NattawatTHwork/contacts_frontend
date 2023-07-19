@@ -5,19 +5,31 @@ import { useRouter } from 'next/router';
 import { checkLogin } from '../components/checkLogin';
 
 const Index = () => {
-  const [data, setData] = useState([]);
-  const router = useRouter();
-
   useEffect(() => {
     checkLogin();
     fetchData();
   }, []);
 
+  const [data, setData] = useState([]);
+  const router = useRouter();
+
   const fetchData = async () => {
     try {
-      const response = await fetch(process.env.API_URL + '/read');
-      const jsonData = await response.json();
-      setData(jsonData);
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(process.env.API_URL + '/read', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+      });
+
+      const result = await response.json();
+      
+      if (result.status == 'success') {
+        setData(result.message);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -31,7 +43,6 @@ const Index = () => {
   };
 
   const handleDelete = async (id) => {
-    // Display a confirmation dialog using SweetAlert2
     Swal.fire({
       title: 'Confirmation',
       text: 'Are you sure you want to delete?',
@@ -43,27 +54,28 @@ const Index = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          const token = localStorage.getItem('token');
+
           const response = await fetch(`${process.env.API_URL}/delete/${id}`, {
             method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token,
+            },
           });
 
-          if (response.ok) {
-            // Deletion successful, update the state or perform any necessary actions
-            console.log('Data deleted successfully.');
-            // Update the data state if required
-            // For example, remove the deleted item from the data array
-            setData((prevData) => prevData.filter((item) => item.user_id !== id));
+          const jsonData = await response.json();
 
-            // Show a success message using SweetAlert2
+          if (jsonData.status == 'success') {
+            console.log('Data deleted successfully.');
+            setData((prevData) => prevData.filter((item) => item.user_id !== id));
             Swal.fire('Deleted!', 'The data has been deleted.', 'success');
           } else {
             console.log('Failed to delete data.');
-            // Show an error message using SweetAlert2
             Swal.fire('Error!', 'Failed to delete the data.', 'error');
           }
         } catch (error) {
           console.log(error);
-          // Show an error message using SweetAlert2
           Swal.fire('Error!', 'An error occurred.', 'error');
         }
       }

@@ -5,11 +5,15 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            setToken(storedToken);
-        }
+        checkToken();
     }, []);
+
+    const checkToken = () => {
+        const myToken = localStorage.getItem('token');
+        if (myToken) {
+            setToken(myToken);
+        }
+    }
 
     return (
         <>
